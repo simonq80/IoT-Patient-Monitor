@@ -31,8 +31,8 @@ static void update_attributes()
 
 	/* Formulate the JSON payload for the attribute update */
 	snprintf(payload, sizeof(payload), "{\"firmware_version\":\"%s\", \"serial_number\":\"%s\", \"uptime\":\"%d\"}",
-		"1.2.3",
-		"jdukes-001",
+		"0.0.1",
+		"team-03",
 		(uint32_t)k_uptime_get_32() / 1000);
 
 	tb_publish_attributes(payload);

@@ -39,6 +39,6 @@
 #define APP_TX_RX_TIMEOUT 500
 #define APP_SLEEP_MSECS 1000
 
-#define TB_ACCESS_TOKEN "rpMoBk6VAl0PgSFbtBcx"
+#define TB_ACCESS_TOKEN "EE:EF:3A:10:95:27"
 
 #endif
