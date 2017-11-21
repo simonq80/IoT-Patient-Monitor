@@ -1,4 +1,4 @@
-# CS7NS2 Application: sleep_monitor
+# CS7NS2 Application: Patient Monitor
 
 ## Preparing Code
 Ubuntu:
@@ -25,10 +25,10 @@ $ rm get-pip.py
 
 ```
 $ export GCCARMEMB_TOOLCHAIN_PATH=/Users/username/Developer/gcc-arm-none-eabi/gcc-arm-none-eabi-6-2017-q2-update/
-$ export ZEPHYR_GCC_VARIANT=gccarmemb```
-
+$ export ZEPHYR_GCC_VARIANT=gccarmemb
 ```
-$ cd zephyr
+
+```$ cd zephyr
 $ source zephyr-env.sh
 ```
 
@@ -38,17 +38,18 @@ $ source zephyr-env.sh
 
 * Navigate to DIR
 
-```$ cd zephyr/cs7ns2/sleep_monitor```
+```$ cd zephyr/cs7ns2/patient_monitor```
 
 * Build program
 
 ```$ make BOARD=nrf52_pca10040 CONF_FILE=prj_cs7ns2.conf```
 
-* If issue wipe board
+* Erase nordic board
 
 ```
 $ nrfjprog --eraseall
-$ nrfjprog --reset --program outdir/nrf52_pca10040/zephyr.hex -f nrf52```
+$ nrfjprog --reset --program outdir/nrf52_pca10040/zephyr.hex -f nrf52
+```
 
 [More help ...](https://gitlab.scss.tcd.ie/jdukes/cs7ns2/wikis/thingsboard_demo.md)
 
@@ -68,6 +69,10 @@ $ hcitool lescan
 
 ```$ echo "connect EE:EF:3A:10:95:27 2" > /sys/kernel/debug/bluetooth/6lowpan_control```
 
-* list active connections
+* List active connections
 
 ```$ hcitool con```
+
+* Remove bluetooth device
+
+```$ hcitool ledc 64```
