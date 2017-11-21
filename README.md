@@ -1,6 +1,4 @@
-# CS7NS2 Team 03
-
-## Patient Monitor (Proposal
+# Team-03 Patient Monitor (Proposal)
 
 ## Source Code Directory
 
