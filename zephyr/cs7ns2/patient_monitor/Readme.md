@@ -18,7 +18,9 @@ $ rm get-pip.py
 
 * Install dependencies
 
-```pip3 install --user -r scripts/requirements.txt```
+```
+pip3 install --user -r scripts/requirements.txt
+```
 
 
 * Set environment variables
@@ -28,7 +30,9 @@ $ export GCCARMEMB_TOOLCHAIN_PATH=/Users/username/Developer/gcc-arm-none-eabi/gc
 $ export ZEPHYR_GCC_VARIANT=gccarmemb
 ```
 
-```$ cd zephyr
+
+```
+$ cd zephyr
 $ source zephyr-env.sh
 ```
 
@@ -38,11 +42,15 @@ $ source zephyr-env.sh
 
 * Navigate to DIR
 
-```$ cd zephyr/cs7ns2/patient_monitor```
+```
+$ cd zephyr/cs7ns2/patient_monitor
+```
 
 * Build program
 
-```$ make BOARD=nrf52_pca10040 CONF_FILE=prj_cs7ns2.conf```
+```
+$ make BOARD=nrf52_pca10040 CONF_FILE=prj_cs7ns2.conf
+```
 
 * Erase nordic board
 
@@ -67,12 +75,18 @@ $ hcitool lescan
 
 * Connect mac address of desired devices
 
-```$ echo "connect EE:EF:3A:10:95:27 2" > /sys/kernel/debug/bluetooth/6lowpan_control```
+```
+$ echo "connect EE:EF:3A:10:95:27 2" > /sys/kernel/debug/bluetooth/6lowpan_control
+```
 
 * List active connections
 
-```$ hcitool con```
+```
+$ hcitool con
+```
 
 * Remove bluetooth device
 
-```$ hcitool ledc 64```
+```
+$ hcitool ledc 64
+```
