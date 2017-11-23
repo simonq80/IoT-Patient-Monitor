@@ -50,7 +50,7 @@ void temp_sim_thread(void * a, void * b, void * c)
 		if ((x = x + X_STEP) >= 1.0)
 			x = 0.0;
 
-		printk("Temperature Reading: %d\n",y);
+		printk("Temperature Reading: \"%d\"",y);
 		snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\"}", y);
 		k_mutex_unlock(&report_temp);
 
@@ -119,4 +119,6 @@ void sensors_start()
 								 temp_sim_thread,
 								 NULL, NULL, NULL,
 								 SS_PRIORITY, 0, K_NO_WAIT);
+
+	ARG_UNUSED(ss_tid);
 }

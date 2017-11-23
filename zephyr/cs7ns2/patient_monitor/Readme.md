@@ -36,6 +36,13 @@ $ cd zephyr
 $ source zephyr-env.sh
 ```
 
+
+* Easy flash
+
+```
+bash flash.sh
+```
+
 [More help ...](https://gitlab.scss.tcd.ie/jdukes/cs7ns2/wikis/Zephyr_getting_started.md)
 
 ##  Create Zephyr Binary:
