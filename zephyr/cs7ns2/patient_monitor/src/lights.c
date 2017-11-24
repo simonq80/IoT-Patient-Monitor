@@ -36,6 +36,6 @@ void lights_init()
 
     for (u32_t i = 0; i < LED_COUNT; i++) {
         gpio_pin_configure(led_dev, led_arr[i], GPIO_DIR_OUT);
-        gpio_pin_write(led_dev, led_arr[i], 0);
+        gpio_pin_write(led_dev, led_arr[i], 1);
     }
 }
