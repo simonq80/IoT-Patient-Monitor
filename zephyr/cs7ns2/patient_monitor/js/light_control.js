@@ -1,5 +1,5 @@
 // Customize for your thingsboard instance
-var TB_ADDRESS = "192.168.134.203"
+var TB_ADDRESS = "172.16.165.129"
 var TB_PORT = 8080
 
 //
@@ -10,17 +10,18 @@ var TB_PORT = 8080
 //
 //   https://thingsboard.io/docs/reference/rest-api/
 //
-var TB_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZW5hbnRAdGhpbmdzYm9hcmQub3JnIiwic2NvcGVzIjpbIlRFTkFOVF9BRE1JTiJdLCJ1c2VySWQiOiI2Y2YzNTU3MC1jZjcxLTExZTctYjVjOS0wMzAwM2QxOWRiMmYiLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiNmNlYmRiNjAtY2Y3MS0xMWU3LWI1YzktMDMwMDNkMTlkYjJmIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNTExMzUzOTg0LCJleHAiOjE1MjAzNTM5ODR9.zZ0zI1Wief8C8axgHDMBY56y6NRAX5hriNqsm9hNYpXIHBLJ9JAo-0r6GrkUHcyilKvGfj1qJ7c0WmBK0k9yug";
+var TB_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25uYXVkQHRjZC5pZSIsInNjb3BlcyI6WyJURU5BTlRfQURNSU4iXSwidXNlcklkIjoiYWRhYmZkNTAtYzU2OC0xMWU3LTg3NzMtOTVkZDM1NTRkNWRjIiwiZW5hYmxlZCI6dHJ1ZSwiaXNQdWJsaWMiOmZhbHNlLCJ0ZW5hbnRJZCI6IjRlMDY1ZDAwLWM1NjgtMTFlNy04NzczLTk1ZGQzNTU0ZDVkYyIsImN1c3RvbWVySWQiOiIxMzgxNDAwMC0xZGQyLTExYjItODA4MC04MDgwODA4MDgwODAiLCJpc3MiOiJ0aGluZ3Nib2FyZC5pbyIsImlhdCI6MTUxMTY5OTgwMywiZXhwIjoxNTIwNjk5ODAzfQ.Rm9fGXXDckldh5cAgUBaSA-xmVpc1foOkNDGRxxKFWEpvru6pOanuFQ4DNFvPdlwW17SGZdqLdhstdPpe25sjA";
 
 // Create an array of thingsboard DEVICE IDs corresponding to your nRF52-DKs
 // You can obtain these using COPY DEVICE ID in the thingsboard web UI
 var DEVICE_IDS = [
-    "bf7ed7c0-d033-11e7-8abe-03003d19db2f"
+    "e47c46f0-c568-11e7-8773-95dd3554d5dc"
 ];
 
 // You might want to declare some constants to make it easier to identify
 // your devices
 var MY_BTN_LED_DEVICE = 0;
+var TEMPERATURE_DEVICE = 0;
 
 // Set the state of the lights on the device `deviceId`
 function doLights(deviceId, lightNo, state) {
@@ -88,6 +89,25 @@ function processTelemetryData(deviceId, data) {
         if (typeof data.btn3 !== 'undefined') {
             doLights(deviceId, 3, data.btn3[0][1] == "true" ? true : false);
         }
+    }
+    // elseif (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE])
+    if (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE]) {
+      if (typeof data.tmp !== 'undefined') {
+          var temperature = data.tmp[0][1];
+          if(temperature < 0){
+            doLights(deviceId, 0, true);
+          }
+          else if (temperature == 0){
+            doLights(deviceId, 1, true);
+          }
+          else if (temperature > 0){
+            doLights(deviceId, 2, true);
+            doLights(deviceId, 3, true);
+          }
+          else{
+            console.log("Undefined temperature");
+          }
+      }
     }
 }
 
