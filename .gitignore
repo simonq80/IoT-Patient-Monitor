@@ -3,3 +3,4 @@ zephyr/cs7ns2/patient_monitor/outdir
 zephyr/cs7ns2/patient_monitor/js/node_modules
 zephyr/cs7ns2/patient_monitor/js/package-lock.json
 zephyr/cs7ns2/patient_monitor/js/config.json
+zephyr/cs7ns2/patient_monitor/prj_cs7ns2.conf
