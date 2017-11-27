@@ -49,19 +49,8 @@ void emulate_sensors(void * a, void * b, void * c)
 		temperature = generate_value_in_range(40, 33);
 		heartbeat = generate_value_in_range(140, 50);
 
-<<<<<<< HEAD
 		snprintf(payload, sizeof(payload), "{\"tmp\":\"%i\",\"hrt\":\"%i\"}",temperature,heartbeat);
 		k_mutex_unlock(&report_temp);
-=======
-		if ((x = x + X_STEP) >= 1.0)
-			x = 0.0;
-
-    // printk("Temperature Reading: \"%d\"",y);
-    // snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\"}", y);
-    printk("Sending Metric: \"%d\"",y);
-		snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\",\"hrt\":\"%d\"}", y,y);
-    k_mutex_unlock(&report_temp);
->>>>>>> b2c61468c45f15a1114b7baed2117c39c3a3084b
 
 		tb_publish_telemetry(payload);
 	}
