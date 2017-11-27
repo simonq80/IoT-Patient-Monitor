@@ -1,6 +1,6 @@
 var CONFIG = require('./config.json');
 
-var MY_BTN_LED_DEVICE = 0;
+var HEART_RATE_DEVICE = 0;
 var TEMPERATURE_DEVICE = 0;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
@@ -74,6 +74,18 @@ function processTelemetryData(deviceId, data) {
         }
       }
     }
+
+    // Heart rate actuation
+    if (deviceId == CONFIG.DEVICE_IDS[HEART_RATE_DEVICE]) {
+        if (typeof data.hrt !== 'undefined') {
+          var heartRate = data.hrt[0][1];
+          if(heartRate < 0){
+            console.log("HEART RATE = " + heartRate);
+          }
+        }
+    }
+
+
 }
 
 
@@ -132,7 +144,7 @@ client.on('connect', function(connection) {
     if (connection.connected) {
 
         // Subscribe to telemetry updates for MY_BTN_LED_DEVICE
-        subscribe(MY_BTN_LED_DEVICE);
+        subscribe(TEMPERATURE_DEVICE);
 
         // Or subscribe to all if you want
         // for (deviceIdx = 0; deviceIdx < DEVICE_IDS.length; deviceIdx++) {
