@@ -3,6 +3,7 @@ var CONFIG = require('./config.json');
 var MY_BTN_LED_DEVICE = 0;
 var TEMPERATURE_DEVICE = 0;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
+var NUMBER_OF_LEDS = 4;
 
 // Set the state of the lights on the device `deviceId`
 function doLights(deviceId, lightNo, state) {
@@ -54,40 +55,23 @@ function processTelemetryData(deviceId, data) {
 
     console.log("Telemetry from " + deviceId + " : " + JSON.stringify(data));
 
-    // Check that this is an update from the device we're interested in
-    if (deviceId == CONFIG.DEVICE_IDS[MY_BTN_LED_DEVICE]) {
-        // Just check for an update to button state and mirror it in the
-        // corresponding LED
-        if (typeof data.btn0 !== 'undefined') {
-            doLights(deviceId, 0, data.btn0[0][1] == "true" ? true : false);
-        }
-        if (typeof data.btn1 !== 'undefined') {
-            doLights(deviceId, 1, data.btn1[0][1] == "true" ? true : false);
-        }
-        if (typeof data.btn2 !== 'undefined') {
-            doLights(deviceId, 2, data.btn2[0][1] == "true" ? true : false);
-        }
-        if (typeof data.btn3 !== 'undefined') {
-            doLights(deviceId, 3, data.btn3[0][1] == "true" ? true : false);
-        }
-    }
-    // elseif (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE])
+    // Turn on lights if temperature falls below zero
     if (deviceId == CONFIG.DEVICE_IDS[TEMPERATURE_DEVICE]) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
           if(temperature < 0){
-            doLights(deviceId, 0, true);
+            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
+              doLights(deviceId, ledno, true);
+            }
           }
-          else if (temperature == 0){
-            doLights(deviceId, 1, true);
-          }
-          else if (temperature > 0){
-            doLights(deviceId, 2, true);
-            doLights(deviceId, 3, true);
-          }
-          else{
-            console.log("Undefined temperature");
-          }
+      }
+
+      // Turn off lights by pressing any button
+      if (typeof data.btn0 !== 'undefined' || typeof data.btn1 !== 'undefined' ||
+            typeof data.btn2 !== 'undefined' || typeof data.btn3 !== 'undefined') {
+        for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
+          doLights(deviceId, ledno, false);
+        }
       }
     }
 }
