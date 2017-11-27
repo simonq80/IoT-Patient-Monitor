@@ -1,5 +1,5 @@
 // Customize for your thingsboard instance
-var TB_ADDRESS = "172.16.165.129"
+var TB_ADDRESS = "localhost"
 var TB_PORT = 8080
 
 //
@@ -10,12 +10,16 @@ var TB_PORT = 8080
 //
 //   https://thingsboard.io/docs/reference/rest-api/
 //
-var TB_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjb25uYXVkQHRjZC5pZSIsInNjb3BlcyI6WyJURU5BTlRfQURNSU4iXSwidXNlcklkIjoiYWRhYmZkNTAtYzU2OC0xMWU3LTg3NzMtOTVkZDM1NTRkNWRjIiwiZW5hYmxlZCI6dHJ1ZSwiaXNQdWJsaWMiOmZhbHNlLCJ0ZW5hbnRJZCI6IjRlMDY1ZDAwLWM1NjgtMTFlNy04NzczLTk1ZGQzNTU0ZDVkYyIsImN1c3RvbWVySWQiOiIxMzgxNDAwMC0xZGQyLTExYjItODA4MC04MDgwODA4MDgwODAiLCJpc3MiOiJ0aGluZ3Nib2FyZC5pbyIsImlhdCI6MTUxMTY5OTgwMywiZXhwIjoxNTIwNjk5ODAzfQ.Rm9fGXXDckldh5cAgUBaSA-xmVpc1foOkNDGRxxKFWEpvru6pOanuFQ4DNFvPdlwW17SGZdqLdhstdPpe25sjA";
+
+// curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"username":"connaud@tcd.ie", "password":"internetofthings"}' 'http://172.16.165.129:8080/api/auth/login'
+
+
+var TB_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaWZpbm5AdGNkLmllIiwic2NvcGVzIjpbIlRFTkFOVF9BRE1JTiJdLCJ1c2VySWQiOiIyOTQ3NzNkMC1jNGI2LTExZTctOWRlNC04MWYzNjJjYzJmZmEiLCJmaXJzdE5hbWUiOiJDaWFyYW4iLCJsYXN0TmFtZSI6IkZpbm4iLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiZDBjYzYzZjAtYzRiNS0xMWU3LTlkZTQtODFmMzYyY2MyZmZhIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNTExNzkzOTAwLCJleHAiOjE1MjA3OTM5MDB9.JUmX3cVxUNMEvb_pbel7SL9fkc_AprXdREbJyNFhFX_-8g2BruFbLKgsrV4jAN_HUO4gYA9QO3gurfNX8jyFtQ";
 
 // Create an array of thingsboard DEVICE IDs corresponding to your nRF52-DKs
 // You can obtain these using COPY DEVICE ID in the thingsboard web UI
 var DEVICE_IDS = [
-    "e47c46f0-c568-11e7-8773-95dd3554d5dc"
+    "539003f0-cf06-11e7-a80b-81f362cc2ffa"
 ];
 
 // You might want to declare some constants to make it easier to identify
