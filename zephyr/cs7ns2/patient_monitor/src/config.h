@@ -39,12 +39,8 @@
 #define APP_TX_RX_TIMEOUT 500
 #define APP_SLEEP_MSECS 1000
 
-
-#define X_STEP 0.05
-#define Z_MAX 100
-#define PI 3.14159265358979323846
-static double x = 0.0;
-static double y = 0.0;
+static int temperature = 0;
+static int heartbeat = 0;
 
 #define SS_STACK_SIZE 2048
 #define SS_PRIORITY 5

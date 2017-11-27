@@ -6,6 +6,7 @@
 #include "config.h"
 #include "tb_pubsub.h"
 #include <math.h>
+#include <stdlib.h>
 
 
 K_MUTEX_DEFINE(report_temp);
@@ -33,7 +34,7 @@ K_THREAD_STACK_DEFINE(ss_stack_area, SS_STACK_SIZE);
 struct k_thread ss_thread;
 
 // generate fake temperature readings
-void temp_sim_thread(void * a, void * b, void * c)
+void emulate_sensors(void * a, void * b, void * c)
 {
 	ARG_UNUSED(a);
 	ARG_UNUSED(b);
@@ -45,19 +46,19 @@ void temp_sim_thread(void * a, void * b, void * c)
 
 		k_mutex_lock(&report_temp, K_FOREVER);
 
-		y = sin(x * 2 * PI);
+		temperature = generate_value_in_range(40, 33);
+		heartbeat = generate_value_in_range(140, 50);
 
-		if ((x = x + X_STEP) >= 1.0)
-			x = 0.0;
-
-		printk("Sending Metric: \"%d\"",y);
-		snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\",\"hrt\":\"%d\"}", y,y);
+		snprintf(payload, sizeof(payload), "{\"tmp\":\"%i\",\"hrt\":\"%i\"}",temperature,heartbeat);
 		k_mutex_unlock(&report_temp);
 
 		tb_publish_telemetry(payload);
 	}
 }
 
+int generate_value_in_range(int max, int min){
+	return rand() % (max + 1 - min) + min;
+}
 
 void btn_handler(struct device *port, struct gpio_callback *cb,
 					u32_t pins)
@@ -116,7 +117,7 @@ void sensors_start()
   // invoke temperature simulator
 	k_tid_t ss_tid = k_thread_create(&ss_thread, ss_stack_area,
 								 K_THREAD_STACK_SIZEOF(ss_stack_area),
-								 temp_sim_thread,
+								 emulate_sensors,
 								 NULL, NULL, NULL,
 								 SS_PRIORITY, 0, K_NO_WAIT);
 

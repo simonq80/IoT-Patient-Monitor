@@ -438,4 +438,6 @@ void tb_pubsub_start()
                                  pubsub_thread,
                                  NULL, NULL, NULL,
                                  PUBSUB_PRIORITY, 0, K_NO_WAIT);
+
+	ARG_UNUSED(tt_tid);											 
 }
