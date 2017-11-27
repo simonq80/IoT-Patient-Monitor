@@ -50,8 +50,8 @@ void temp_sim_thread(void * a, void * b, void * c)
 		if ((x = x + X_STEP) >= 1.0)
 			x = 0.0;
 
-		printk("Temperature Reading: \"%d\"",y);
-		snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\"}", y);
+		printk("Sending Metric: \"%d\"",y);
+		snprintf(payload, sizeof(payload), "{\"tmp\":\"%d\",\"hrt\":\"%d\"}", y,y);
 		k_mutex_unlock(&report_temp);
 
 		tb_publish_telemetry(payload);

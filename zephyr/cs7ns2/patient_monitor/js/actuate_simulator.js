@@ -1,31 +1,8 @@
-// Customize for your thingsboard instance
-var TB_ADDRESS = "localhost"
-var TB_PORT = 8080
+var CONFIG = require('./config.json');
 
-//
-// You need to replace `token` below with a JWT_TOKEN obtained from your
-// thingsboard instance. Follow the instructions at the URL below, specifically
-// the command at the end of the page beginning `curl -X POST ...`, which you
-// must modify as appropriate (thingsboard IP address in particular):
-//
-//   https://thingsboard.io/docs/reference/rest-api/
-//
-
-// curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"username":"connaud@tcd.ie", "password":"internetofthings"}' 'http://172.16.165.129:8080/api/auth/login'
-
-
-var TB_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjaWZpbm5AdGNkLmllIiwic2NvcGVzIjpbIlRFTkFOVF9BRE1JTiJdLCJ1c2VySWQiOiIyOTQ3NzNkMC1jNGI2LTExZTctOWRlNC04MWYzNjJjYzJmZmEiLCJmaXJzdE5hbWUiOiJDaWFyYW4iLCJsYXN0TmFtZSI6IkZpbm4iLCJlbmFibGVkIjp0cnVlLCJpc1B1YmxpYyI6ZmFsc2UsInRlbmFudElkIjoiZDBjYzYzZjAtYzRiNS0xMWU3LTlkZTQtODFmMzYyY2MyZmZhIiwiY3VzdG9tZXJJZCI6IjEzODE0MDAwLTFkZDItMTFiMi04MDgwLTgwODA4MDgwODA4MCIsImlzcyI6InRoaW5nc2JvYXJkLmlvIiwiaWF0IjoxNTExNzkzOTAwLCJleHAiOjE1MjA3OTM5MDB9.JUmX3cVxUNMEvb_pbel7SL9fkc_AprXdREbJyNFhFX_-8g2BruFbLKgsrV4jAN_HUO4gYA9QO3gurfNX8jyFtQ";
-
-// Create an array of thingsboard DEVICE IDs corresponding to your nRF52-DKs
-// You can obtain these using COPY DEVICE ID in the thingsboard web UI
-var DEVICE_IDS = [
-    "539003f0-cf06-11e7-a80b-81f362cc2ffa"
-];
-
-// You might want to declare some constants to make it easier to identify
-// your devices
 var MY_BTN_LED_DEVICE = 0;
 var TEMPERATURE_DEVICE = 0;
+var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 
 // Set the state of the lights on the device `deviceId`
 function doLights(deviceId, lightNo, state) {
@@ -35,7 +12,7 @@ function doLights(deviceId, lightNo, state) {
     // See: https://thingsboard.io/docs/user-guide/rpc/
 
     var request = require("request");
-    var url = "http://" + TB_ADDRESS+":" + TB_PORT + "/api/plugins/rpc/oneway/" + deviceId;
+    var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
 
     // The JSON RPC description must match that expected in tb_pubsub.c
     var req = {
@@ -52,7 +29,7 @@ function doLights(deviceId, lightNo, state) {
         method: "POST",
         json: req,
         headers: {
-            "X-Authorization": "Bearer " + TB_TOKEN,
+            "X-Authorization": "Bearer " + CONFIG.TB_TOKEN,
             // Note the error in the TB docs: `Bearer` is missing from
             // `X-Authorization`, causing a 401 error response
         }
@@ -78,7 +55,7 @@ function processTelemetryData(deviceId, data) {
     console.log("Telemetry from " + deviceId + " : " + JSON.stringify(data));
 
     // Check that this is an update from the device we're interested in
-    if (deviceId == DEVICE_IDS[MY_BTN_LED_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[MY_BTN_LED_DEVICE]) {
         // Just check for an update to button state and mirror it in the
         // corresponding LED
         if (typeof data.btn0 !== 'undefined') {
@@ -95,7 +72,7 @@ function processTelemetryData(deviceId, data) {
         }
     }
     // elseif (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE])
-    if (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[TEMPERATURE_DEVICE]) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
           if(temperature < 0){
@@ -142,7 +119,7 @@ client.on('connect', function(connection) {
         if (message.type === 'utf8') {
             var rxObj = JSON.parse(message.utf8Data);
             if (typeof rxObj.subscriptionId !== 'undefined') {
-                processTelemetryData(DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
+                processTelemetryData(CONFIG.DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
             }
         }
     });
@@ -155,7 +132,7 @@ client.on('connect', function(connection) {
             tsSubCmds: [
                 {
                     entityType: "DEVICE",
-                    entityId: DEVICE_IDS[deviceIdx],
+                    entityId: CONFIG.DEVICE_IDS[deviceIdx],
                     scope: "LATEST_TELEMETRY",
                     cmdId: deviceIdx
                 }
@@ -164,7 +141,7 @@ client.on('connect', function(connection) {
             attrSubCmds: []
         };
 
-        console.log("Subscribing to " + DEVICE_IDS[deviceIdx]);
+        console.log("Subscribing to " + CONFIG.DEVICE_IDS[deviceIdx]);
         connection.sendUTF(JSON.stringify(req));
     }
 
@@ -180,4 +157,4 @@ client.on('connect', function(connection) {
     }
 });
 
-client.connect("ws://" + TB_ADDRESS + ":" + TB_PORT + "/api/ws/plugins/telemetry?token=" + TB_TOKEN);
+client.connect("ws://" + BASE_URL + "/api/ws/plugins/telemetry?token=" + CONFIG.TB_TOKEN);
