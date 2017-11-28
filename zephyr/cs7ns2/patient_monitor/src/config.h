@@ -39,10 +39,35 @@
 #define APP_TX_RX_TIMEOUT 500
 #define APP_SLEEP_MSECS 1000
 
-static int temperature = 0;
-static int heartbeat = 0;
+// sensor simulator config
 
-#define SS_STACK_SIZE 2048
-#define SS_PRIORITY 5
+#define SIMULATOR_STACK_SIZE 2048
+#define SIMULATOR_PRIORITY 5
+
+// bed occupancy sensor config
+
+#define BOS_STACK_SIZE 2048
+#define BOS_PRIORITY 4
+#define BOS_SLEEP_MSECS 4000
+#define BOS_PROCESS_TIME 100
+#define READING_WHEN_OUT_OF_BED 420
+
+#define AIN1		2
+#define MAX_SAMPLES 16
+
+#define ADC_REG_BASE			0x40007000
+#define ADC_ENABLE_REG     		(ADC_REG_BASE + 0x500)
+#define ADC_TASK_START_REG    	(ADC_REG_BASE + 0x0)
+#define ADC_TASK_SAMPLE_REG     (ADC_REG_BASE + 0x4)
+#define ADC_TASK_STOP_REG     	(ADC_REG_BASE + 0x8)
+#define ADC_EVENT_DONE_REG      (ADC_REG_BASE + 0x108)
+#define ADC_CH0_PSELP_REG      	(ADC_REG_BASE + 0x510)
+#define ADC_CH0_CONFIG_REG      (ADC_REG_BASE + 0x518)
+#define ADC_RESULT_PTR_REG		(ADC_REG_BASE + 0x62C)
+#define ADC_RESULT_MAX_REG		(ADC_REG_BASE + 0x630)
+#define ADC_RESULT_CNT_REG		(ADC_REG_BASE + 0x634)
+
+#define ADC_REFSEL_VDD_4		(1 << 12)
+#define ADC_TACQ_40				(5 << 16)
 
 #endif
