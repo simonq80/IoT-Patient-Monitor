@@ -94,7 +94,7 @@ void handle_putLights(char *json, int json_len)
 	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
 
 	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
-		__func__, __LINE__, rx_rpc.method, rx_rpc.params.ledno, rx_rpc.params.value ? "OFF" : "ON");
+		__func__, __LINE__, rx_rpc.method, rx_rpc.params.ledno, rx_rpc.params.value ? "ON" : "OFF");
 
 	/* Call light control provided by lights.c */
 	putLights(rx_rpc.params.ledno, rx_rpc.params.value);
@@ -438,4 +438,6 @@ void tb_pubsub_start()
                                  pubsub_thread,
                                  NULL, NULL, NULL,
                                  PUBSUB_PRIORITY, 0, K_NO_WAIT);
+
+	ARG_UNUSED(tt_tid);											 
 }
