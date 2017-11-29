@@ -1,0 +1,19 @@
+<table>
+  <tr>
+    <td>Name</td>
+    <td>Address</td>
+    <td>Schedule IDs</td>
+  </tr>
+
+  {% for row in x %}
+      <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>
+          {% for s in row[2] %}
+            <a href="schedules/{{s}}">{{s}}</a>
+          {% endfor %}
+        </td>
+      </tr>
+  {% endfor %}
+</table?
