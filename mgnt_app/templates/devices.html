@@ -1,19 +1,24 @@
-<table>
-  <tr>
-    <td>Name</td>
-    <td>Address</td>
-    <td>Schedule IDs</td>
-  </tr>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+</head>
+<body>
+  <table class="table table-striped">
+    <tr>
+      <td>Name</td>
+      <td>Address</td>
+      <td>Schedule IDs</td>
+    </tr>
 
-  {% for row in x %}
-      <tr>
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>
-          {% for s in row[2] %}
-            <a href="schedules/{{s}}">{{s}}</a>
-          {% endfor %}
-        </td>
-      </tr>
-  {% endfor %}
-</table?
+    {% for row in x %}
+        <tr>
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>
+            {% for s in row[2] %}
+              <a href="schedules/{{s}}">{{s}}</a>
+            {% endfor %}
+          </td>
+        </tr>
+    {% endfor %}
+  </table>
+</body>
