@@ -8,3 +8,4 @@ obj-y += main.o
 obj-y += sensors.o
 obj-y += lights.o
 obj-y += tb_pubsub.o
+obj-y += buzzer.o

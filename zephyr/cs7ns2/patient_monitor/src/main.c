@@ -16,6 +16,7 @@
 #include "tb_pubsub.h"
 #include "sensors.h"
 #include "lights.h"
+#include "buzzer.h"
 #include "config.h"
 
 #define ATTR_UPDATE_INTERVAL 15000
@@ -45,6 +46,8 @@ static void event_iface_up(struct net_mgmt_event_callback *cb,
 	tb_pubsub_start();
 	sensors_start();
 	lights_init();
+	buzzer_init();
+	activate_buzzer();
 }
 
 void main(void)
