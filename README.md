@@ -3,7 +3,9 @@
 ## Source Code Directory
 
 Please follow the readme.md to get your build env setup
-```/zephyr/cs7ns2/patient_monitor/```
+```
+/zephyr/cs7ns2/patient_monitor/
+```
 
 ### Approach:
 1. Monitor when patients are sleeping
