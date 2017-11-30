@@ -8,11 +8,15 @@ db = SQLAlchemy(app)
 
 class device(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80))
+    name = db.Column(db.String(80), unique=True, nullable=False)
     address = db.Column(db.String(120), unique=True, nullable=False)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+    def delete(self):
+        for sch in self.schedule:
+            sch.delete()
+        db.session.commit()
+        db.session.delete(self)
+        db.session.commit()
 
 class schedule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -22,11 +26,18 @@ class schedule(db.Model):
         nullable=False)
     device = db.relationship('device', backref=db.backref('schedule', lazy=True))
 
+    def delete(self):
+        for time in self.times:
+            db.session.delete(time)
+        db.session.commit()
+        db.session.delete(self)
+        db.session.commit()
+
 class time(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    hour = db.Column(db.Integer)
-    minute = db.Column(db.Integer)
+    hour = db.Column(db.Integer, nullable=False)
+    minute = db.Column(db.Integer, nullable=False)
 
     schedule_id = db.Column(db.Integer, db.ForeignKey('schedule.id'),
         nullable=False)
@@ -44,11 +55,19 @@ def a():
 
 @app.route('/devices', methods=['POST', 'GET'])
 @app.route('/devices/<name>')
-def d(name=None):
+@app.route('/devices/<name>/<remove>')
+def d(name=None, remove=None):
     if request.method == "POST":
         dev = device(name=request.form["name"], address=request.form["address"])
         db.session.add(dev)
         db.session.commit()
+
+    if remove is not None:
+        dev = db.session.query(device).filter(device.name == name).one_or_none()
+        if dev:
+            dev.delete()
+        name = None
+
     if name is None:
         devs = db.session.query(device).all()
     else:
@@ -59,7 +78,8 @@ def d(name=None):
 
 @app.route('/schedules', methods=['POST', 'GET'])
 @app.route('/schedules/<name>')
-def s(name=None):
+@app.route('/schedules/<name>/<remove>')
+def s(name=None, remove=None):
     if request.method == "POST":
         dev = db.session.query(device).filter(device.name == request.form["dname"]).one_or_none()
         tstr = request.form["times"]
@@ -75,6 +95,12 @@ def s(name=None):
             dev.schedule.append(s)
             db.session.add(dev)
             db.session.commit()
+
+    if remove is not None:
+        sch = db.session.query(schedule).filter(schedule.id == name).one_or_none()
+        if sch:
+            sch.delete()
+        name = None
 
     if name is None:
         sch = db.session.query(schedule).all()

@@ -2,12 +2,13 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 </head>
 <body>
-  <h2> Devices  <a href="../schedules">Schedules</a></h2>
+  <h2> Devices  <a href="/schedules">Schedules</a></h2>
   <table class="table table-striped">
     <tr>
       <td>Name</td>
       <td>Address</td>
       <td>Schedule IDs</td>
+      <td>Delete</td>
     </tr>
 
     {% for row in x %}
@@ -16,14 +17,17 @@
           <td>{{ row[1] }}</td>
           <td>
             {% for s in row[2] %}
-              <a href="../schedules/{{s}}">{{s}}</a>
+              <a href="/schedules/{{s}}">{{s}}</a>
             {% endfor %}
+          </td>
+          <td>
+              <a href="/devices/{{row[0]}}/delete">Delete</a>
           </td>
         </tr>
     {% endfor %}
   </table>
   <h2> Add Device </h2>
-  <form class="form" action="../devices" method="post">
+  <form class="form" action="/devices" method="post">
     <label for="name">Device Name:</label>
     <input type="text" name="name" id="name">
     <label for="address">Device Address:</label>
