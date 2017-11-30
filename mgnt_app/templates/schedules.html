@@ -2,15 +2,40 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 </head>
 <body>
+  <h2> <a href="../devices">Devices</a>  Schedules</h2>
   <table class="table table-striped">
     <tr>
       <td>ID</td>
+      <td>Name</td>
+      <td>Device</td>
+      <td>Times</td>
     </tr>
 
     {% for row in x %}
         <tr>
           <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>
+              <a href="../devices/{{row[2]}}">{{row[2]}}</a>
+          </td>
+          <td>{{ row[3] }}</td>
         </tr>
     {% endfor %}
   </table>
+  <h2> Add Schedule </h2>
+  <form class="form-horizontal" action="../schedules" method="post">
+    <div class="form-group">
+      <label for="dname">Device Name:</label>
+      <input type="text" name="dname" id="dname">    <div class="form-group">
+    </div>
+    <div class="form-group">
+      <label for="sname">Schedule Name:</label>
+      <input type="text" name="sname" id="sname">
+    </div>
+    <div class="form-group">
+      <label for="times">Times (xx:xx, space/newline   seperated):</label>
+      <textarea name="times" id="times", rows="5"></textarea>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
 </body>
