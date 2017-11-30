@@ -29,16 +29,22 @@
   <h2> Add Schedule </h2>
   <form class="form-horizontal" action="/schedules" method="post">
     <div class="form-group">
-      <label for="dname">Device Name:</label>
-      <input type="text" name="dname" id="dname">    <div class="form-group">
+      <label class="control-label col-sm-2" for="dname">Device Name:</label>
+      <div class="col-sm-10">
+        <input type="text" name="dname" id="dname">
+      </div>
     </div>
     <div class="form-group">
-      <label for="sname">Schedule Name:</label>
-      <input type="text" name="sname" id="sname">
+      <label class="control-label col-sm-2" for="sname">Schedule Name:</label>
+      <div class="col-sm-10">
+        <input type="text" name="sname" id="sname">
+      </div>
     </div>
     <div class="form-group">
-      <label for="times">Times (xx:xx, space/newline   seperated):</label>
-      <textarea name="times" id="times", rows="5"></textarea>
+      <label class="control-label col-sm-2" for="times">Times (xx:xx, space/newline   seperated):</label>
+      <div class="col-sm-10">
+        <textarea name="times" id="times", rows="5"></textarea>
+      </div>
     </div>
     <button type="submit" class="btn btn-default">Submit</button>
   </form>
