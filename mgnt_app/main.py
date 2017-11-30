@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@127.0.0.1:32770/db1'
@@ -33,7 +34,7 @@ class schedule(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-class time(db.Model):
+class time1(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     hour = db.Column(db.Integer, nullable=False)
@@ -90,7 +91,7 @@ def s(name=None, remove=None):
         if dev is not None:
             s = schedule(name = request.form["sname"])
             for ti in times:
-                t = time(hour=ti[0], minute=ti[1])
+                t = time1(hour=ti[0], minute=ti[1])
                 s.times.append(t)
             dev.schedule.append(s)
             db.session.add(dev)
@@ -109,6 +110,18 @@ def s(name=None, remove=None):
 
     a = [[s.id, s.name, s.device.name, str([(str(t.hour) + ':' + str(t.minute)) for t in s.times])] for s in sch]
     return render_template('schedules.html', x=a)
+
+@app.route('/current_alarms')
+def alarms():
+    h = datetime.now().hour
+    m = datetime.now().minute
+    times = db.session.query(time1).filter(time1.hour == h, time1.minute == m)
+    l = []
+    for time in times:
+        l.append(time.schedule.device.address)
+    return '\n'.join(l)
+
+
 
 
 if __name__ == "__main__":
