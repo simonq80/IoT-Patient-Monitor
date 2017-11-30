@@ -6,17 +6,43 @@
 #include <misc/printk.h>
 
 #define BUZZER_STACK_SIZE 2048
+#define BUZZER_PRIORITY 6
 #define GPIO_PORT LED0_GPIO_PORT
 #define BUZZER_PIN 11
 #define BUZZER_INTERVAL_MSECS 700
 #define ON 1
 #define OFF 0
 
-struct device *buzzer_dev;
+// configure buzzer thread
+K_THREAD_STACK_DEFINE(buzzer_stack_area, BUZZER_STACK_SIZE);
+struct k_thread buzzer_thread;
 
-// start the buzzer
+struct device *buzzer_dev;
+k_tid_t buzzer_tid;
+
+// start buzzer
 void activate_buzzer(){
-    printk("\nBuzzer activated\n");
+    printk("\nBuzzer activated");
+    k_thread_resume(buzzer_tid);
+}
+
+// silence buzzer
+void disarm_buzzer(){
+    printk("\nBuzzer disarmed");
+    // suspend the thread and toggle the buzzer to off state
+    k_thread_suspend(buzzer_tid);
+    gpio_pin_write(buzzer_dev, BUZZER_PIN, OFF);
+}
+
+// toggle buzz on & off
+void perform_buzz(void * a, void * b, void * c){
+
+    ARG_UNUSED(a);
+    ARG_UNUSED(b);
+    ARG_UNUSED(c);
+
+    printk("\nBuzzing");
+
     int index = 0;
 
     while (1) {
@@ -27,14 +53,21 @@ void activate_buzzer(){
 	}
 }
 
-// silence buzzer
-void disarm_buzzer(){
-    printk("\nBuzzer disarmed\n");
-    gpio_pin_write(buzzer_dev, BUZZER_PIN, OFF);
-}
-
 // configure buzzer
 void buzzer_init(){
+    printk("\nInitiating buzzer setup");
     buzzer_dev = device_get_binding(GPIO_PORT);
     gpio_pin_configure(buzzer_dev, BUZZER_PIN, GPIO_DIR_OUT);
+
+    // initalise buzzer thread
+    buzzer_tid = k_thread_create(&buzzer_thread, buzzer_stack_area,
+                               K_THREAD_STACK_SIZEOF(buzzer_stack_area),
+                               perform_buzz,
+                               NULL, NULL, NULL,
+                               BUZZER_PRIORITY, 0, K_NO_WAIT);
+
+    //suspend thread execution (prevents buzzer ringing)
+    k_thread_suspend(buzzer_tid);
+
+    ARG_UNUSED(buzzer_tid);
 }
