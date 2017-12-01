@@ -8,13 +8,6 @@ var NUMBER_OF_LEDS = 4;
 // Set the state of the lights on the device `deviceId`
 function doLights(deviceId, lightNo, state) {
 
-    // Use the server-side device RPC API to cause thingsboard to issue a device
-    // RPC to a device that we identify by `buttonEntityId`
-    // See: https://thingsboard.io/docs/user-guide/rpc/
-
-    var request = require("request");
-    var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
-
     // The JSON RPC description must match that expected in tb_pubsub.c
     var req = {
         "method" : "putLights",
@@ -24,31 +17,10 @@ function doLights(deviceId, lightNo, state) {
         }
     };
 
-    // Issue the HTTP POST request
-    request({
-        url: url,
-        method: "POST",
-        json: req,
-        headers: {
-            "X-Authorization": "Bearer " + CONFIG.TB_TOKEN,
-            // Note the error in the TB docs: `Bearer` is missing from
-            // `X-Authorization`, causing a 401 error response
-        }
-    }, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            console.log("OK" + ((typeof body != 'undefined') ? ": " + body : ""));
-        }
-        else {
-            console.log("error: " + error)
-            console.log("response.statusCode: " + response.statusCode)
-            console.log("response.statusText: " + response.statusText)
-        }
-    });
+    doRequest(deviceId, req);
 }
 
 function doBuzzer(deviceId, state) {
-  var request = require("request");
-  var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
 
   var req = {
     "method" : "putBuzzer",
@@ -56,6 +28,16 @@ function doBuzzer(deviceId, state) {
       "value" : state
     }
   };
+
+  doRequest(deviceId, req);
+}
+
+function doRequest(deviceId, req) {
+  // Use the server-side device RPC API to cause thingsboard to issue a device
+  // RPC to a device that we identify by `buttonEntityId`
+  // See: https://thingsboard.io/docs/user-guide/rpc/
+  var request = require("request");
+  var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
 
   // Issue the HTTP POST request
   request({
