@@ -105,10 +105,6 @@ function processTelemetryData(deviceId, data) {
           doLights(deviceId, ledno, false);
         }
       }
-
-      if (typeof data.btn1 !== 'undefined') {
-        doBuzzer(deviceId, false);
-      }
     }
 
     // Heart rate actuation
@@ -117,7 +113,13 @@ function processTelemetryData(deviceId, data) {
           var heartRate = data.hrt[0][1];
           if(heartRate < 0){
             console.log("HEART RATE = " + heartRate);
+            doBuzzer(deviceId, true);
           }
+        }
+
+        // Disarm alarm
+        if (typeof data.btn1 !== 'undefined') {
+          doBuzzer(deviceId, false);
         }
     }
 
