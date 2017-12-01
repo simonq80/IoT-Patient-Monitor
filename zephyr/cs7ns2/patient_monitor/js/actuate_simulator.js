@@ -46,6 +46,39 @@ function doLights(deviceId, lightNo, state) {
     });
 }
 
+function doBuzzer(deviceId, state) {
+  var request = require("request");
+  var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
+
+  var req = {
+    "method" : "putBuzzer",
+    "params" : {
+      "value" : state
+    }
+  };
+
+  // Issue the HTTP POST request
+  request({
+      url: url,
+      method: "POST",
+      json: req,
+      headers: {
+          "X-Authorization": "Bearer " + CONFIG.TB_TOKEN,
+          // Note the error in the TB docs: `Bearer` is missing from
+          // `X-Authorization`, causing a 401 error response
+      }
+  }, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+          console.log("OK" + ((typeof body != 'undefined') ? ": " + body : ""));
+      }
+      else {
+          console.log("error: " + error)
+          console.log("response.statusCode: " + response.statusCode)
+          console.log("response.statusText: " + response.statusText)
+      }
+  });
+}
+
 // Process device telemetry updates received from thingsboard device `deviceId`
 function processTelemetryData(deviceId, data) {
 
@@ -67,11 +100,14 @@ function processTelemetryData(deviceId, data) {
       }
 
       // Turn off lights by pressing any button
-      if (typeof data.btn0 !== 'undefined' || typeof data.btn1 !== 'undefined' ||
-            typeof data.btn2 !== 'undefined' || typeof data.btn3 !== 'undefined') {
+      if (typeof data.btn0 !== 'undefined') {
         for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
           doLights(deviceId, ledno, false);
         }
+      }
+
+      if (typeof data.btn1 !== 'undefined') {
+        doBuzzer(deviceId, false);
       }
     }
 
