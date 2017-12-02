@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Setup a mySQL database and edit the config file to point to it
+Setup a mySQL database and edit the config file to point to it (running the server creates all tables)
 
 ## Run
 
