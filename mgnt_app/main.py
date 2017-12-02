@@ -7,8 +7,8 @@ import configparser
 c = configparser.ConfigParser()
 c.read('config.cfg')
 c = c['MAIN']
-db_path = 'mysql+pymysql://' + c['MYSQL_USER']  + ':' + c['MYSQL_PASS']\
-    + '@' + c['MYSQL_HOST'] + ':' + c['MYSQL_PORT'] + '/' + c['MYSQL_DB']
+db_path = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(c['MYSQL_USER'],
+    c['MYSQL_PASS'], c['MYSQL_HOST'], c['MYSQL_PORT'], c['MYSQL_DB'])
 server_host = c['SERVER_HOST']
 server_port = c['SERVER_PORT']
 
