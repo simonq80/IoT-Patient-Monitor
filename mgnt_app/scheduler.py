@@ -1,10 +1,10 @@
 from threading import Thread
 from time import sleep
 import requests
-
+from main import server_host, server_port
 
 def alarm(t):
-    data = requests.get('http://127.0.0.1:8000/current_alarms').text
+    data = requests.get('http://{}:{}/current_alarms'.format(server_host, server_port)).text
     [print('Alarming ' + d) for d in data.split('\n')]
 
 

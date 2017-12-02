@@ -2,9 +2,19 @@ from flask import Flask, render_template, request
 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import configparser
+
+c = configparser.ConfigParser()
+c.read('config.cfg')
+c = c['MAIN']
+db_path = 'mysql+pymysql://' + c['MYSQL_USER']  + ':' + c['MYSQL_PASS']\
+    + '@' + c['MYSQL_HOST'] + ':' + c['MYSQL_PORT'] + '/' + c['MYSQL_DB']
+server_host = c['SERVER_HOST']
+server_port = c['SERVER_PORT']
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:mysql@127.0.0.1:32770/db1'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class device(db.Model):
@@ -45,15 +55,7 @@ class time1(db.Model):
     schedule = db.relationship('schedule', backref=db.backref('times', lazy=True))
 
 
-
-db.create_all()
-
-
-
 @app.route('/')
-def a():
-    return 'Home'
-
 @app.route('/devices', methods=['POST', 'GET'])
 @app.route('/devices/<name>')
 @app.route('/devices/<name>/<remove>')
@@ -125,4 +127,5 @@ def alarms():
 
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(host="0.0.0.0", port="8000")
