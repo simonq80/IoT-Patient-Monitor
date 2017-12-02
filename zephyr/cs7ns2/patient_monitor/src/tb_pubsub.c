@@ -17,7 +17,7 @@
 #include <json.h>
 
 #include "lights.h"
-
+#include "buzzer.h"
 #include "config.h"
 
 #define MAX_PENDING_PUB_MSGS 20
@@ -100,6 +100,41 @@ void handle_putLights(char *json, int json_len)
 	putLights(rx_rpc.params.ledno, rx_rpc.params.value);
 }
 
+struct rpc_putBuzzer {
+	const char* method;
+	struct rpc_putBuzzer_params {
+		bool value;
+	} params;
+};
+
+void handle_putBuzzer(char *json, int json_len)
+{
+	printk("[%s:%d] parsing: %s\n",	__func__, __LINE__, json);
+
+	static const struct json_obj_descr rpc_descr_params[] = {
+		JSON_OBJ_DESCR_PRIM(struct rpc_putBuzzer_params, value, JSON_TOK_TRUE),
+	};
+
+	static const struct json_obj_descr rpc_descr[] = {
+		JSON_OBJ_DESCR_PRIM(struct rpc_putBuzzer, method, JSON_TOK_STRING),
+		JSON_OBJ_DESCR_OBJECT(struct rpc_putBuzzer, params, rpc_descr_params)
+	};
+
+	struct rpc_putLights rx_rpc={};
+
+	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
+
+	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
+		__func__, __LINE__, rx_rpc.method, rx_rpc.params.ledno, rx_rpc.params.value ? "ON" : "OFF");
+
+	if (rx_rpc.params.value)
+	{
+		activate_buzzer();
+	} else {
+		disarm_buzzer();
+	}
+}
+
 /*
  * Process an RPC request received from the thingsboard instance
  */
@@ -119,6 +154,9 @@ void handle_rpc(char *json, int json_len)
 
 	if ( strncmp(&json[11], "putLights", strlen("putLights")) == 0 ) {
 		handle_putLights(json, json_len);
+	}
+	else if ( strncmp(&json[11], "putBuzzer", strlen("putBuzzer")) == 0) {
+		handle_putBuzzer(json, json_len);
 	}
 
 	/*
@@ -439,5 +477,5 @@ void tb_pubsub_start()
                                  NULL, NULL, NULL,
                                  PUBSUB_PRIORITY, 0, K_NO_WAIT);
 
-	ARG_UNUSED(tt_tid);											 
+	ARG_UNUSED(tt_tid);
 }

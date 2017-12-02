@@ -8,13 +8,6 @@ var NUMBER_OF_LEDS = 4;
 // Set the state of the lights on the device `deviceId`
 function doLights(deviceId, lightNo, state) {
 
-    // Use the server-side device RPC API to cause thingsboard to issue a device
-    // RPC to a device that we identify by `buttonEntityId`
-    // See: https://thingsboard.io/docs/user-guide/rpc/
-
-    var request = require("request");
-    var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
-
     // The JSON RPC description must match that expected in tb_pubsub.c
     var req = {
         "method" : "putLights",
@@ -24,26 +17,48 @@ function doLights(deviceId, lightNo, state) {
         }
     };
 
-    // Issue the HTTP POST request
-    request({
-        url: url,
-        method: "POST",
-        json: req,
-        headers: {
-            "X-Authorization": "Bearer " + CONFIG.TB_TOKEN,
-            // Note the error in the TB docs: `Bearer` is missing from
-            // `X-Authorization`, causing a 401 error response
-        }
-    }, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            console.log("OK" + ((typeof body != 'undefined') ? ": " + body : ""));
-        }
-        else {
-            console.log("error: " + error)
-            console.log("response.statusCode: " + response.statusCode)
-            console.log("response.statusText: " + response.statusText)
-        }
-    });
+    doRequest(deviceId, req);
+}
+
+function doBuzzer(deviceId, state) {
+
+  var req = {
+    "method" : "putBuzzer",
+    "params" : {
+      "value" : state
+    }
+  };
+
+  doRequest(deviceId, req);
+}
+
+function doRequest(deviceId, req) {
+  // Use the server-side device RPC API to cause thingsboard to issue a device
+  // RPC to a device that we identify by `buttonEntityId`
+  // See: https://thingsboard.io/docs/user-guide/rpc/
+  var request = require("request");
+  var url = "http://" + BASE_URL + "/api/plugins/rpc/oneway/" + deviceId;
+
+  // Issue the HTTP POST request
+  request({
+      url: url,
+      method: "POST",
+      json: req,
+      headers: {
+          "X-Authorization": "Bearer " + CONFIG.TB_TOKEN,
+          // Note the error in the TB docs: `Bearer` is missing from
+          // `X-Authorization`, causing a 401 error response
+      }
+  }, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+          console.log("OK" + ((typeof body != 'undefined') ? ": " + body : ""));
+      }
+      else {
+          console.log("error: " + error)
+          console.log("response.statusCode: " + response.statusCode)
+          console.log("response.statusText: " + response.statusText)
+      }
+  });
 }
 
 // Process device telemetry updates received from thingsboard device `deviceId`
@@ -67,8 +82,7 @@ function processTelemetryData(deviceId, data) {
       }
 
       // Turn off lights by pressing any button
-      if (typeof data.btn0 !== 'undefined' || typeof data.btn1 !== 'undefined' ||
-            typeof data.btn2 !== 'undefined' || typeof data.btn3 !== 'undefined') {
+      if (typeof data.btn0 !== 'undefined') {
         for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
           doLights(deviceId, ledno, false);
         }
@@ -81,7 +95,13 @@ function processTelemetryData(deviceId, data) {
           var heartRate = data.hrt[0][1];
           if(heartRate < 0){
             console.log("HEART RATE = " + heartRate);
+            doBuzzer(deviceId, true);
           }
+        }
+
+        // Disarm alarm
+        if (typeof data.btn1 !== 'undefined') {
+          doBuzzer(deviceId, false);
         }
     }
 

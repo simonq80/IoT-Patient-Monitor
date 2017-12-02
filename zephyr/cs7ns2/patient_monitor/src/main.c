@@ -47,7 +47,6 @@ static void event_iface_up(struct net_mgmt_event_callback *cb,
 	sensors_start();
 	lights_init();
 	buzzer_init();
-	activate_buzzer();
 }
 
 void main(void)

@@ -71,6 +71,12 @@ $ nrfjprog --reset --program outdir/nrf52_pca10040/zephyr.hex -f nrf52
 
 ## Thingsboard VM Config
 
+* Start thingsboard
+
+```
+sudo service thingsboard start
+```
+
 * Discover bluetooth device
 
 ```
