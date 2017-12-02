@@ -5,7 +5,8 @@ from main import server_host, server_port
 
 def alarm(t):
     data = requests.get('http://{}:{}/current_alarms'.format(server_host, server_port)).text
-    [print('Alarming ' + d) for d in data.split('\n')]
+    if data is not '':
+        [print('Alarming ' + d) for d in data.split('\n')]
 
 
 if __name__ == "__main__":
