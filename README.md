@@ -26,3 +26,12 @@ Please follow the readme.md to get your build env setup
 * I/O device connection
 * MTTQ protocol handlers (Python)
 * Configure Things-Board Broker
+
+### Actuation:
+
+Sensor                | Condition                      | Actuation        | Button Conrol 
+--------------------- | ------------------------------ | --------------   | -------------
+Temperature Sensor    | <= 33 (lowest possible value)  | LED 1 Turns On   | Button 1 Turns LED off
+Heart Rate Monitor    | <= 50 (lowest possible value)  | LED 2 Turns On   | Button 2 Turns LED off
+Bed Occupancy Sensor  | True                           | LED 3 Turns On   | n/a
+Wake Up Alarm         | True                           | Buzzer Activated | Button 4 Disarms Buzzer
