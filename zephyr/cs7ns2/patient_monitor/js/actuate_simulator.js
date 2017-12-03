@@ -2,6 +2,7 @@ var CONFIG = require('./config.json');
 
 var HEART_RATE_DEVICE = 0;
 var TEMPERATURE_DEVICE = 0;
+var BED_OCCUPANCY_DEVICE = 0;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
 
@@ -74,18 +75,14 @@ function processTelemetryData(deviceId, data) {
     if (deviceId == CONFIG.DEVICE_IDS[TEMPERATURE_DEVICE]) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
-          if(temperature < 0){
-            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
-              doLights(deviceId, ledno, true);
-            }
+          if( temperature <= 33) {
+            doLights(deviceId, 0, true);
           }
       }
 
-      // Turn off lights by pressing any button
+      // Turn off light by pressing any button
       if (typeof data.btn0 !== 'undefined') {
-        for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++ ){
-          doLights(deviceId, ledno, false);
-        }
+        doLights(deviceId, 0, false);
       }
     }
 
@@ -93,15 +90,23 @@ function processTelemetryData(deviceId, data) {
     if (deviceId == CONFIG.DEVICE_IDS[HEART_RATE_DEVICE]) {
         if (typeof data.hrt !== 'undefined') {
           var heartRate = data.hrt[0][1];
-          if(heartRate < 0){
-            console.log("HEART RATE = " + heartRate);
-            doBuzzer(deviceId, true);
+          if(heartRate <= 50){
+            doLights(deviceId, 1, true);
+            //doBuzzer(deviceId, true);
           }
         }
 
         // Disarm alarm
         if (typeof data.btn1 !== 'undefined') {
-          doBuzzer(deviceId, false);
+          doLights(deviceId, 1, false);
+          //doBuzzer(deviceId, false);
+        }
+    }
+
+    // Bed occupancy actuation
+    if (deviceId == CONFIG.DEVICE_IDS[BED_OCCUPANCY_DEVICE]) {
+        if (typeof data.occ !== 'undefined') {
+          doLights(deviceId, 2, data.occ[0][1] == "true" ? true : false);
         }
     }
 
