@@ -25,11 +25,24 @@ class thingsboard:
         resp = requests.delete(self.host + path, headers=self.auth_header, params=parameters)
         return resp.text
 
+    def actuate_lights(self, deviceId, lightNo, state):
+        data = {
+        "method" : "putLights",
+        "params" : {
+            "ledno" : lightNo,
+            "value" : state
+        }
+        return self.post_request("/api/plugins/rpc/oneway/" + device_id, data)
+    }
+
+
+a = thingsboard('localhost:8080', 'simonq80@gmail.com', 'admin')
 
 if __name__ == "__main__":
 
-    a = thingsboard('localhost:8080', 'siquigle@tcd.ie', 'admin')
-
     print(a.auth_header)
     print(a.get_request('/api/admin/updates'))
-    print(a.post_request('/api/devices', {'deviceTypes': ['string']}))
+
+    print(a.get_request('/api/customer/869c5ee0-d052-11e7-b095-e10f78cbdea4/devices', {'limit': '10'}))
+
+    print(a.post_request('/api/devices', {'deviceTypes': ['node']}))
