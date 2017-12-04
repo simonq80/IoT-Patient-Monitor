@@ -19,21 +19,20 @@ class thingsboard:
 
     def post_request(self, path, body, parameters=None):
         resp = requests.post(self.host + path, headers=self.auth_header, params=parameters, json=body)
-        return resp.text
+        return resp.text + str(resp.status_code)
 
     def delete_request(self, path, parameters=None):
         resp = requests.delete(self.host + path, headers=self.auth_header, params=parameters)
         return resp.text
 
-    def actuate_lights(self, deviceId, lightNo, state):
+    def actuate_lights(self, device_id, lightNo, state):
         data = {
         "method" : "putLights",
         "params" : {
             "ledno" : lightNo,
             "value" : state
-        }
+        }}
         return self.post_request("/api/plugins/rpc/oneway/" + device_id, data)
-    }
 
 
 a = thingsboard('localhost:8080', 'simonq80@gmail.com', 'admin')
