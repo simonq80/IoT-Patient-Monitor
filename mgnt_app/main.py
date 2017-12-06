@@ -126,7 +126,7 @@ def s(name=None, remove=None):
 
 def get_next_alarm_seconds(alarms):
     if len(alarms) == 0:
-        return 0
+        return 1000000
     alarms = [3600 * hour + 60 * minute for (hour, minute) in alarms]
     now = datetime.now()
     now = 3600 * now.hour + 60 * now.minute + now.second
