@@ -29,9 +29,9 @@ Please follow the readme.md to get your build env setup
 
 ### Actuation:
 
-Sensor                | Condition                      | Actuation        | Button Conrol 
+Sensor                | Condition                      | Actuation        | Button Control
 --------------------- | ------------------------------ | --------------   | -------------
-Temperature Sensor    | <= 33 (lowest possible value)  | LED 1 Turns On   | Button 1 Turns LED off
-Heart Rate Monitor    | <= 50 (lowest possible value)  | LED 2 Turns On   | Button 2 Turns LED off
-Bed Occupancy Sensor  | True                           | LED 3 Turns On   | n/a
+Temperature Sensor    | <= 33 (lowest possible value)  | LEDs Turn On     | Button 1 Turns LEDs off
+Heart Rate Monitor    | <= 50 (lowest possible value)  | LEDs Turn On     | Button 2 Turns LEDs off
+Bed Occupancy Sensor  | True                           | LEDs Turn On     | n/a
 Wake Up Alarm         | True                           | Buzzer Activated | Button 4 Disarms Buzzer

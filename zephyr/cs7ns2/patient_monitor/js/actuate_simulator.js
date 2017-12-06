@@ -1,8 +1,11 @@
 var CONFIG = require('./config.json');
 
-var HEART_RATE_DEVICE = 0;
+// DAN :: CIARAN :: ? :: ?
+var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","d16426e0-cae6-11e7-876a-49001af33fbb","id2","id3"]
+
 var TEMPERATURE_DEVICE = 0;
-var BED_OCCUPANCY_DEVICE = 0;
+var HEART_RATE_DEVICE = 1;
+var BED_OCCUPANCY_DEVICE = 2;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
 
@@ -72,41 +75,48 @@ function processTelemetryData(deviceId, data) {
     console.log("Telemetry from " + deviceId + " : " + JSON.stringify(data));
 
     // Turn on lights if temperature falls below zero
-    if (deviceId == CONFIG.DEVICE_IDS[TEMPERATURE_DEVICE]) {
+    if (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE]) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
           if( temperature <= 33) {
-            doLights(deviceId, 0, true);
+            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+              doLights(deviceId, ledno, true);
+            }
           }
       }
 
       // Turn off light by pressing any button
       if (typeof data.btn0 !== 'undefined') {
-        doLights(deviceId, 0, false);
+        for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+          doLights(deviceId, ledno, false);
+       }
       }
     }
 
     // Heart rate actuation
-    if (deviceId == CONFIG.DEVICE_IDS[HEART_RATE_DEVICE]) {
+    if (deviceId == DEVICE_IDS[HEART_RATE_DEVICE]) {
         if (typeof data.hrt !== 'undefined') {
           var heartRate = data.hrt[0][1];
           if(heartRate <= 50){
-            doLights(deviceId, 1, true);
-            //doBuzzer(deviceId, true);
+            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+              doLights(deviceId, ledno, true);
+            }
           }
         }
 
-        // Disarm alarm
         if (typeof data.btn1 !== 'undefined') {
-          doLights(deviceId, 1, false);
-          //doBuzzer(deviceId, false);
-        }
+            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+              doLights(deviceId, ledno, false);
+            }
+          }
     }
 
     // Bed occupancy actuation
-    if (deviceId == CONFIG.DEVICE_IDS[BED_OCCUPANCY_DEVICE]) {
+    if (deviceId == DEVICE_IDS[BED_OCCUPANCY_DEVICE]) {
         if (typeof data.occ !== 'undefined') {
-          doLights(deviceId, 2, data.occ[0][1] == "true" ? true : false);
+          for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+            doLights(deviceId, ledno, data.occ[0][1] == "false" ? true : false);
+          }
         }
     }
 
@@ -140,7 +150,7 @@ client.on('connect', function(connection) {
         if (message.type === 'utf8') {
             var rxObj = JSON.parse(message.utf8Data);
             if (typeof rxObj.subscriptionId !== 'undefined') {
-                processTelemetryData(CONFIG.DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
+                processTelemetryData(DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
             }
         }
     });
@@ -153,7 +163,7 @@ client.on('connect', function(connection) {
             tsSubCmds: [
                 {
                     entityType: "DEVICE",
-                    entityId: CONFIG.DEVICE_IDS[deviceIdx],
+                    entityId: DEVICE_IDS[deviceIdx],
                     scope: "LATEST_TELEMETRY",
                     cmdId: deviceIdx
                 }
@@ -162,7 +172,7 @@ client.on('connect', function(connection) {
             attrSubCmds: []
         };
 
-        console.log("Subscribing to " + CONFIG.DEVICE_IDS[deviceIdx]);
+        console.log("Subscribing to " + DEVICE_IDS[deviceIdx]);
         connection.sendUTF(JSON.stringify(req));
     }
 
@@ -170,6 +180,8 @@ client.on('connect', function(connection) {
 
         // Subscribe to telemetry updates for MY_BTN_LED_DEVICE
         subscribe(TEMPERATURE_DEVICE);
+        // subscribe(HEART_RATE_DEVICE);
+        // subscribe(BED_OCCUPANCY_DEVICE);
 
         // Or subscribe to all if you want
         // for (deviceIdx = 0; deviceIdx < DEVICE_IDS.length; deviceIdx++) {
