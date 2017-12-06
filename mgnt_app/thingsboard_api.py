@@ -35,9 +35,9 @@ class thingsboard:
         return self.post_request("/api/plugins/rpc/oneway/" + device_id, data)
 
 
-a = thingsboard('localhost:8080', 'simonq80@gmail.com', 'admin')
-
 if __name__ == "__main__":
+
+    a = thingsboard('localhost:8080', 'simonq80@gmail.com', 'admin')
 
     print(a.auth_header)
     print(a.get_request('/api/admin/updates'))

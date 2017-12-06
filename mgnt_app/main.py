@@ -3,6 +3,11 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import configparser
+import json
+import requests
+from thingsboard_api import thingsboard
+from threading import Thread
+from time import sleep
 
 c = configparser.ConfigParser()
 c.read('config.cfg')
@@ -11,6 +16,12 @@ db_path = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(c['MYSQL_USER'],
     c['MYSQL_PASS'], c['MYSQL_HOST'], c['MYSQL_PORT'], c['MYSQL_DB'])
 server_host = c['SERVER_HOST']
 server_port = c['SERVER_PORT']
+tb_host = c['TB_HOST']
+tb_port = c['TB_PORT']
+tb_user = c['TB_USER']
+tb_pass = c['TB_PASS']
+tb = thingsboard('{}:{}'.format(tb_host, tb_port), tb_user, tb_pass)
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_path
@@ -113,19 +124,49 @@ def s(name=None, remove=None):
     a = [[s.id, s.name, s.device.name, str([(str(t.hour) + ':' + str(t.minute)) for t in s.times])] for s in sch]
     return render_template('schedules.html', x=a)
 
-@app.route('/current_alarms')
-def alarms():
-    h = datetime.now().hour
-    m = datetime.now().minute
-    times = db.session.query(time1).filter(time1.hour == h, time1.minute == m)
-    l = []
-    for time in times:
-        l.append(time.schedule.device.address)
-    return '\n'.join(l)
+def get_next_alarm_seconds(alarms):
+    if len(alarms) == 0:
+        return 0
+    alarms = [3600 * hour + 60 * minute for (hour, minute) in alarms]
+    now = datetime.now()
+    now = 3600 * now.hour + 60 * now.minute + now.second
+    n = 1000000
+    for alarm in alarms:
+        if alarm - now > 0 and alarm - now < n:
+            n = alarm - now
+    if n == 1000000:
+        n = min(alarms) + (86400 -now)
+    return n
+
+
+@app.route('/next_alarms')
+def next_alarms():
+    devices = db.session.query(device)
+    toReturn = {}
+    for dev in devices:
+        times = []
+        for schedule in dev.schedule:
+            for time in schedule.times:
+                times.append((time.hour, time.minute))
+        toReturn[dev.address] = get_next_alarm_seconds(times)
+
+    return json.dumps(toReturn)
+
+
+def device_update(host, port):
+    while True:
+        sleep(15)
+        data = requests.get('http://{}:{}/next_alarms'.format(host, port)).json()
+
+        print(data)
+        for deviceId in data:
+            print('ID: {} Seconds: {}'.format(deviceId, data[deviceId]))
 
 
 
 
 if __name__ == "__main__":
     db.create_all()
-    app.run(host="0.0.0.0", port="8000")
+    thread = Thread(target = device_update, args = (server_host, server_port))
+    thread.start()
+    app.run(host=server_host, port=server_port, threaded=True)
