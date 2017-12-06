@@ -125,7 +125,7 @@ void handle_putBuzzer(char *json, int json_len)
 	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
 
 	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
-		__func__, __LINE__, rx_rpc.method, rx_rpc.params.ledno, rx_rpc.params.value ? "ON" : "OFF");
+		__func__, __LINE__, rx_rpc.method, rx_rpc.params.value ? "ON" : "OFF");
 
 	if (rx_rpc.params.value)
 	{
@@ -133,6 +133,34 @@ void handle_putBuzzer(char *json, int json_len)
 	} else {
 		disarm_buzzer();
 	}
+}
+
+struct rpc_putTimer {
+	const char* method;
+	struct rpc_putTimer_params {
+		int seconds;
+	} params;
+};
+
+void handle_putTimer(char *json, int json_len)
+{
+	printk("[%s:%d] parsing: %s\n",	__func__, __LINE__, json);
+
+	static const struct json_obj_descr rpc_descr_params[] = {
+		JSON_OBJ_DESCR_PRIM(struct rpc_putTimer_params, seconds, JSON_TOK_NUMBER),
+	};
+
+	static const struct json_obj_descr rpc_descr[] = {
+		JSON_OBJ_DESCR_PRIM(struct rpc_putTimer, method, JSON_TOK_STRING),
+		JSON_OBJ_DESCR_OBJECT(struct rpc_putTimer, params, rpc_descr_params)
+	};
+
+	struct rpc_putTimer rx_rpc={};
+
+	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
+
+	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
+		__func__, __LINE__, rx_rpc.method, rx_rpc.params.seconds);
 }
 
 /*
@@ -152,11 +180,16 @@ void handle_rpc(char *json, int json_len)
 	 * function.
 	 */
 
+	 printk(json);
+
 	if ( strncmp(&json[11], "putLights", strlen("putLights")) == 0 ) {
 		handle_putLights(json, json_len);
 	}
 	else if ( strncmp(&json[11], "putBuzzer", strlen("putBuzzer")) == 0) {
 		handle_putBuzzer(json, json_len);
+	}
+	else if ( strncmp(&json[11], "putTimer", strlen("putTimer")) == 0) {
+		handle_putTimer(json, json_len);
 	}
 
 	/*
