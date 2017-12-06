@@ -1,6 +1,7 @@
 var CONFIG = require('./config.json');
 
-var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","id1","id2","id3"]
+// DAN :: CIARAN :: ? :: ?
+var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","d16426e0-cae6-11e7-876a-49001af33fbb","id2","id3"]
 
 var TEMPERATURE_DEVICE = 0;
 var HEART_RATE_DEVICE = 1;
