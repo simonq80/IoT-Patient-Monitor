@@ -1,11 +1,11 @@
 var CONFIG = require('./config.json');
 
-// DAN :: CIARAN :: ? :: ?
-var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","d16426e0-cae6-11e7-876a-49001af33fbb","id2","id3"]
+// DAN :: CIARAN :: PADDY :: ?
+var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","d16426e0-cae6-11e7-876a-49001af33fbb","d16426e0-cae6-11e7-876a-49001af33fbb","id3"]
 
-var TEMPERATURE_DEVICE = 0;
-var HEART_RATE_DEVICE = 1;
-var BED_OCCUPANCY_DEVICE = 2;
+var TEMPERATURE_DEVICE = 2;
+var HEART_RATE_DEVICE = 3;
+var BED_OCCUPANCY_DEVICE = 3;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
 
@@ -34,6 +34,18 @@ function doBuzzer(deviceId, state) {
   };
 
   doRequest(deviceId, req);
+}
+
+function setTimer(deviceId, seconds) {
+
+  var req = {
+    "method" : "putTimer",
+    "params" : {
+      "seconds" : seconds
+    }
+  };
+
+  doRequest(deviceId, seconds);
 }
 
 function doRequest(deviceId, req) {
@@ -79,9 +91,8 @@ function processTelemetryData(deviceId, data) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
           if( temperature <= 33) {
-            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
-              doLights(deviceId, ledno, true);
-            }
+            doLights(deviceId, 3, true);
+            setTimer(deviceId, 100);
           }
       }
 
