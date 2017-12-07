@@ -1,51 +1,55 @@
 <head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 </head>
+<nav class="nav">
+  <a class="nav-link active"><b>Schedules</b></a></h2>
+  <a class="nav-link disabled" href="/devices">Devices</a>
+</nav>
 <body>
-  <h2> <a href="/devices">Devices</a>  Schedules</h2>
-  <table class="table table-striped">
-    <tr>
-      <td>ID</td>
-      <td>Name</td>
-      <td>Device</td>
-      <td>Times</td>
-      <td>Delete</td>
-    </tr>
-
+  <div class="container">
+    <div class="well">
+      <h2>Add Patient Schedule</h2>
+      <form class="form-horizontal" action="/schedules" method="post">
+        <div class="form-group">
+          <label for="dname">Device Name:</label>
+            <input class="form-control" type="text" name="dname" id="dname">
+        </div>
+        <div class="form-group">
+          <label for="sname">Schedule Name:</label>
+            <input class="form-control" type="text" name="sname" id="sname">
+        </div>
+        <div class="form-group">
+          <label for="times">Times (xx:xx, space/newline   seperated):</label>
+          <textarea class="form-control" name="times" id="times", rows="5"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+      </form>
+    </div>
+  <table class="table">
+    <thread>
+      <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Device</td>
+        <td>Times</td>
+        <td>Delete</td>
+      </tr>
+    </thread>
+    <tbody>
     {% for row in x %}
         <tr>
           <td>{{ row[0] }}</td>
           <td>{{ row[1] }}</td>
           <td>
-              <a href="/devices/{{row[2]}}">{{row[2]}}</a>
+              <a class="btn btn-info" href="/devices/{{row[2]}}">ID: {{row[2]}}</a>
           </td>
-          <td>{{ row[3] }}</td>
+          <td><code>{{ row[3] }}</code></td>
           <td>
-              <a href="/schedules/{{row[0]}}/delete">Delete</a>
+              <a class="btn btn-danger" href="/schedules/{{row[0]}}/delete">Delete</a>
           </td>
         </tr>
     {% endfor %}
+  </tbody>
   </table>
-  <h2> Add Schedule </h2>
-  <form class="form-horizontal" action="/schedules" method="post">
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="dname">Device Name:</label>
-      <div class="col-sm-10">
-        <input type="text" name="dname" id="dname">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="sname">Schedule Name:</label>
-      <div class="col-sm-10">
-        <input type="text" name="sname" id="sname">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="control-label col-sm-2" for="times">Times (xx:xx, space/newline   seperated):</label>
-      <div class="col-sm-10">
-        <textarea name="times" id="times", rows="5"></textarea>
-      </div>
-    </div>
-    <button type="submit" class="btn btn-default">Submit</button>
-  </form>
+  </div>
 </body>
