@@ -37,7 +37,7 @@
 #define APP_TX_CONN_TRIES 20
 #define APP_TX_CONN_WAIT_MSECS 1000
 #define APP_TX_RX_TIMEOUT 500
-#define APP_SLEEP_MSECS 1000
+#define APP_SLEEP_MSECS 4000
 
 // sensor simulator config
 
@@ -45,12 +45,15 @@
 #define SIMULATOR_PRIORITY 5
 
 // bed occupancy sensor config
-
 #define BOS_STACK_SIZE 2048
 #define BOS_PRIORITY 4
 #define BOS_SLEEP_MSECS 4000
 #define BOS_PROCESS_TIME 100
 #define READING_WHEN_OUT_OF_BED 420
+
+// buzzer config
+#define BUZZER_AUTO_DISARM 20
+#define BUZZER_REST_TIME 3
 
 #define AIN1		2
 #define MAX_SAMPLES 16
