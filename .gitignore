@@ -5,3 +5,4 @@ zephyr/cs7ns2/patient_monitor/js/package-lock.json
 zephyr/cs7ns2/patient_monitor/js/config.json
 zephyr/cs7ns2/patient_monitor/prj_cs7ns2.conf
 mgnt_app/config.cfg
+.DS_Store
