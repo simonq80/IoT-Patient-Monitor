@@ -96,6 +96,9 @@ $ hcitool lescan
 
 ```
 $ echo "connect EE:EF:3A:10:95:27 2" > /sys/kernel/debug/bluetooth/6lowpan_control
+$ echo "connect C7:44:81:6B:25:41 2" > /sys/kernel/debug/bluetooth/6lowpan_control
+$ echo "connect DA:DA:10:B0:D2:05 2" > /sys/kernel/debug/bluetooth/6lowpan_control
+$ echo "connect CA:65:AF:2A:27:88 2" > /sys/kernel/debug/bluetooth/6lowpan_control
 ```
 
 * List active connections
