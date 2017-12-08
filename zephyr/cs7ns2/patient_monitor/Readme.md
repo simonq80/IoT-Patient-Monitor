@@ -1,5 +1,11 @@
 # CS7NS2 Application: Patient Monitor
 
+## Mac Addresses:
+1. Ciaran: `EE:EF:3A:10:95:27`
+2. Dan: `C7:44:81:6B:25:41`
+3. Paddy:`DA:DA:10:B0:D2:05`
+4. Simon: `CA:65:AF:2A:27:88`
+
 ## Preparing Code
 Ubuntu:
 ```
