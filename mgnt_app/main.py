@@ -179,6 +179,12 @@ def device_update(host, port):
         for deviceId in data:
             print('ID: {} Seconds: {}'.format(deviceId, data[deviceId]))
 
+        ids = [id for id in data]
+        times = [data[id] for id in data]
+        states = [True for id in data]
+        tb.multithread_actuate_lights(ids, times, states)
+
+
 
 
 
@@ -186,4 +192,4 @@ if __name__ == "__main__":
     db.create_all()
     thread = Thread(target = device_update, args = (server_host, server_port))
     thread.start()
-    app.run(host=server_host, port=server_port, threaded=True)
+    app.run(host=server_host, port=server_port)
