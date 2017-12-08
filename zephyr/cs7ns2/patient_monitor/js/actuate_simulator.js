@@ -45,7 +45,7 @@ function setTimer(deviceId, seconds) {
     }
   };
 
-  doRequest(deviceId, seconds);
+  doRequest(deviceId, req);
 }
 
 function doRequest(deviceId, req) {

@@ -152,13 +152,30 @@ def next_alarms():
 
     return json.dumps(toReturn)
 
+@app.route('/add_devices')
+def add_devices():
+    customer_data = json.loads(tb.get_request('/api/customers', {'limit': 100}))
+    customer_ids = [d['id']['id'] for d in customer_data['data']]
+    dev_ids = []
+    for cid in customer_ids:
+        dev_data = json.loads(tb.get_request('/api/customer/{}/devices'.format(cid), {'limit': 100}))
+        device_ids = [{'name': d['name'], 'id': d['id']['id']} for d in dev_data['data']]
+        for dev in device_ids:
+            dev_ids.append(dev)
+    for dev in dev_ids:
+        if db.session.query(device).filter(device.name == dev['name']).one_or_none() is None and\
+            db.session.query(device).filter(device.address == dev['id']).one_or_none() is None:
+            dev = device(name=dev['name'], address=dev['id'])
+            db.session.add(dev)
+            db.session.commit()
+    return d()
+
 
 def device_update(host, port):
     while True:
         sleep(15)
         data = requests.get('http://{}:{}/next_alarms'.format(host, port)).json()
 
-        print(data)
         for deviceId in data:
             print('ID: {} Seconds: {}'.format(deviceId, data[deviceId]))
 
