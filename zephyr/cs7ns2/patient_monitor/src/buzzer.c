@@ -3,6 +3,7 @@
 #include <device.h>
 #include <gpio.h>
 #include "buzzer.h"
+#include "config.h"
 #include <misc/printk.h>
 
 #define BUZZER_STACK_SIZE 2048
@@ -20,9 +21,23 @@ struct k_thread buzzer_thread;
 struct device *buzzer_dev;
 k_tid_t buzzer_tid;
 
+struct k_timer timer;
+
+// disarms the buzzer if it sounds too long
+void expiry_handler()
+{
+    printk("\nEXPIRED: Buzzer has sounded too long.");
+    disarm_buzzer();
+}
+
+K_TIMER_DEFINE(timer, expiry_handler, NULL);
+
 // start buzzer
 void activate_buzzer(){
     printk("\nBuzzer activated");
+    // wait for the ending of the first timer before starting the second
+    k_timer_status_sync(&timer);
+    k_timer_start(&timer, K_SECONDS(BUZZER_AUTO_DISARM), 0);
     k_thread_resume(buzzer_tid);
 }
 
@@ -52,6 +67,7 @@ void perform_buzz(void * a, void * b, void * c){
 		k_sleep(BUZZER_INTERVAL_MSECS);
 	}
 }
+
 
 // configure buzzer
 void buzzer_init(){

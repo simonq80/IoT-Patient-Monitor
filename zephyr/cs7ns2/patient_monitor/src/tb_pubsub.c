@@ -120,12 +120,11 @@ void handle_putBuzzer(char *json, int json_len)
 		JSON_OBJ_DESCR_OBJECT(struct rpc_putBuzzer, params, rpc_descr_params)
 	};
 
-	struct rpc_putLights rx_rpc={};
+	struct rpc_putBuzzer rx_rpc={};
 
 	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
 
-	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
-		__func__, __LINE__, rx_rpc.method, rx_rpc.params.value ? "ON" : "OFF");
+	printk("Buzzer State: %s\n", rx_rpc.params.value ? "ON" : "OFF");
 
 	if (rx_rpc.params.value)
 	{
@@ -141,6 +140,15 @@ struct rpc_putTimer {
 		int seconds;
 	} params;
 };
+
+struct k_timer patient_timer;
+
+void timer_expire(struct k_timer *dummy) {
+	printk("TIMER DONE!\n");
+	//activate_buzzer();
+}
+
+K_TIMER_DEFINE(patient_timer, timer_expire, NULL);
 
 void handle_putTimer(char *json, int json_len)
 {
@@ -159,8 +167,10 @@ void handle_putTimer(char *json, int json_len)
 
 	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
 
-	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
+	printk("[%s:%d] parsed method: %s, seconds: %d\n",
 		__func__, __LINE__, rx_rpc.method, rx_rpc.params.seconds);
+
+	k_timer_start(&patient_timer, K_SECONDS(rx_rpc.params.seconds), 0);
 }
 
 /*

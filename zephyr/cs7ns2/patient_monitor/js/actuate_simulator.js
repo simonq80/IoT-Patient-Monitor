@@ -1,11 +1,11 @@
 var CONFIG = require('./config.json');
 
 // DAN :: CIARAN :: PADDY :: ?
-var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","d16426e0-cae6-11e7-876a-49001af33fbb","d16426e0-cae6-11e7-876a-49001af33fbb","id3"]
+var DEVICE_IDS = ["e47c46f0-c568-11e7-8773-95dd3554d5dc","539003f0-cf06-11e7-a80b-81f362cc2ffa","d16426e0-cae6-11e7-876a-49001af33fbb","7c551b00-dc0c-11e7-9bdd-95dd3554d5dc"]
 
-var TEMPERATURE_DEVICE = 2;
-var HEART_RATE_DEVICE = 3;
-var BED_OCCUPANCY_DEVICE = 3;
+var TEMPERATURE_DEVICE = 1;
+var HEART_RATE_DEVICE = 1;
+var BED_OCCUPANCY_DEVICE = 1;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
 
@@ -191,8 +191,8 @@ client.on('connect', function(connection) {
 
         // Subscribe to telemetry updates for MY_BTN_LED_DEVICE
         subscribe(TEMPERATURE_DEVICE);
-        // subscribe(HEART_RATE_DEVICE);
-        // subscribe(BED_OCCUPANCY_DEVICE);
+        subscribe(HEART_RATE_DEVICE);
+        subscribe(BED_OCCUPANCY_DEVICE);
 
         // Or subscribe to all if you want
         // for (deviceIdx = 0; deviceIdx < DEVICE_IDS.length; deviceIdx++) {
