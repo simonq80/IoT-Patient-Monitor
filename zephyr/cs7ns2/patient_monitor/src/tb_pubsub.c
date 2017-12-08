@@ -141,6 +141,15 @@ struct rpc_putTimer {
 	} params;
 };
 
+struct k_timer patient_timer;
+
+void timer_expire(struct k_timer *dummy) {
+	printk("TIMER DONE!\n");
+	//activate_buzzer();
+}
+
+K_TIMER_DEFINE(patient_timer, timer_expire, NULL);
+
 void handle_putTimer(char *json, int json_len)
 {
 	printk("[%s:%d] parsing: %s\n",	__func__, __LINE__, json);
@@ -158,8 +167,10 @@ void handle_putTimer(char *json, int json_len)
 
 	json_obj_parse(json, json_len, rpc_descr, ARRAY_SIZE(rpc_descr), &rx_rpc);
 
-	printk("[%s:%d] parsed method: %s, params: led%d=%s\n",
+	printk("[%s:%d] parsed method: %s, seconds: %d\n",
 		__func__, __LINE__, rx_rpc.method, rx_rpc.params.seconds);
+
+	k_timer_start(&patient_timer, K_SECONDS(rx_rpc.params.seconds), 0);
 }
 
 /*
