@@ -163,10 +163,12 @@ def add_devices():
         for dev in device_ids:
             dev_ids.append(dev)
     for dev in dev_ids:
-        dev = device(name=dev['name'], address=dev['id'])
-        db.session.add(dev)
-        db.session.commit()
-    return json.dumps(dev_ids)
+        if db.session.query(device).filter(device.name == dev['name']).one_or_none() is None and\
+            db.session.query(device).filter(device.address == dev['id']).one_or_none() is None:
+            dev = device(name=dev['name'], address=dev['id'])
+            db.session.add(dev)
+            db.session.commit()
+    return d()
 
 
 def device_update(host, port):
