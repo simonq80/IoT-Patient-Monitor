@@ -181,8 +181,7 @@ def device_update(host, port):
 
         ids = [id for id in data]
         times = [data[id] for id in data]
-        states = [True for id in data]
-        tb.multithread_actuate_lights(ids, times, states)
+        tb.multithread_set_timer(ids, times)
 
 
 

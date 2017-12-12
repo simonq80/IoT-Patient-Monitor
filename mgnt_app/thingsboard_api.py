@@ -55,6 +55,20 @@ class thingsboard:
         print(bodys)
         return self.multithread_post_request(paths, bodys)
 
+    def multithread_set_timer(self, device_ids, seconds):
+        paths = ['/api/plugins/rpc/oneway/' + x for x in device_ids]
+        bodys = [
+            {
+            "method" : "putTimer",
+            "params" : {
+              "seconds" : s
+            }} for s in seconds]
+        print(paths)
+        print(bodys)
+        return self.multithread_post_request(paths, bodys)
+
+
+
 
 
 
