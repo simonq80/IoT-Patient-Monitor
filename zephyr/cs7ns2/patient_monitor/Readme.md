@@ -112,3 +112,14 @@ $ hcitool con
 ```
 $ hcitool ledc 64
 ```
+
+
+* Run JS actuation
+
+```
+$ node install
+$ node actuate_simulator.js
+```
+
+* ensure that the correct configurations are set `js/config.js`
+and within `actuate_simulator.js`

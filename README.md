@@ -2,10 +2,16 @@
 
 ## Source Code Directory
 
-Please follow the readme.md to get your build env setup
+Review the readme.md to build/setup your env
 ```
-/zephyr/cs7ns2/patient_monitor/
+/zephyr/cs7ns2/patient_monitor/readme.md
+/mgnt_app/readme.md
 ```
+
+### System Overview:
+![Alt text](assets/pic1.png?raw=true "Optional Title")
+![Alt text](assets/pic2.png?raw=true "Optional Title")
+![Alt text](assets/pic3.png?raw=true "Optional Title")
 
 ### Approach:
 1. Monitor when patients are sleeping
@@ -15,10 +21,11 @@ Please follow the readme.md to get your build env setup
 5. Send sleep data to cloud to analyze patient sleep/wake cycles.
 
 ### Sensors:
-* Gyro / Pressure Sensor (Movement of patient) `possibily another sensor`
+* Motion Sensor
+* heart-rate/temperature simulator sensors
 
 ### Output:
-* Speaker
+* Buzzer
 * Lights
 
 ### Requirements:
