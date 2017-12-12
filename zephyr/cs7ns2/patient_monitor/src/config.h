@@ -52,7 +52,7 @@
 #define READING_WHEN_OUT_OF_BED 420
 
 // buzzer config
-#define BUZZER_AUTO_DISARM 20
+#define BUZZER_AUTO_DISARM 40
 #define BUZZER_REST_TIME 3
 
 #define AIN1		2

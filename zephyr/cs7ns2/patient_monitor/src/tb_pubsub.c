@@ -130,6 +130,7 @@ void handle_putBuzzer(char *json, int json_len)
 	{
 		activate_buzzer();
 	} else {
+		// putLights(1, false);
 		disarm_buzzer();
 	}
 }
@@ -145,8 +146,8 @@ struct k_timer patient_timer;
 
 void timer_expire(struct k_timer *dummy) {
 	printk("TIMER DONE!\n");
-	//activate_buzzer();
-	putLights(1, true);
+	activate_buzzer();
+	// putLights(1, true);
 }
 
 K_TIMER_DEFINE(patient_timer, timer_expire, NULL);
