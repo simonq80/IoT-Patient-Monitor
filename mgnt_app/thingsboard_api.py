@@ -61,8 +61,6 @@ class thingsboard:
             "params" : {
               "seconds" : s
             }} for s in seconds]
-        print(paths)
-        print(bodys)
         return self.multithread_post_request(paths, bodys)
 
 
