@@ -173,7 +173,7 @@ def add_devices():
 
 def device_update(host, port):
     while True:
-        sleep(15)
+        sleep(10)
         data = requests.get('http://{}:{}/next_alarms'.format(host, port)).json()
 
         for deviceId in data:
@@ -181,7 +181,7 @@ def device_update(host, port):
 
         ids = [id for id in data]
         times = [data[id] for id in data]
-        tb.multithread_set_timer(ids, times)
+        print(tb.multithread_set_timer(ids, times))
 
 
 

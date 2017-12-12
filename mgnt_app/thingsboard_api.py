@@ -22,11 +22,17 @@ class thingsboard:
         resp = requests.post(self.host + path, headers=self.auth_header, params=parameters, json=body)
         return resp.text + str(resp.status_code)
 
+    @staticmethod
+    def response_status_code(resp):
+        if resp is None:
+            return 408
+        return resp.status_code
+
     def multithread_post_request(self, paths, bodys, parameters=None):
         pb = zip(paths, bodys)
-        reqs = (grequests.post(self.host + p, headers=self.auth_header, params=parameters, json=b) for (p, b) in pb)
+        reqs = (grequests.post(self.host + p, headers=self.auth_header, params=parameters, json=b, timeout=5) for (p, b) in pb)
         resps = grequests.map(reqs)
-        return [resp.status_code for resp in resps]
+        return [self.response_status_code(resp) for resp in resps]
 
     def delete_request(self, path, parameters=None):
         resp = requests.delete(self.host + path, headers=self.auth_header, params=parameters)
