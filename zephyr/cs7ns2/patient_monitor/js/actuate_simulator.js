@@ -92,7 +92,7 @@ function processTelemetryData(deviceId, data) {
           var temperature = data.tmp[0][1];
           if( temperature <= 33) {
             doLights(deviceId, 3, true);
-            setTimer(deviceId, 100);
+            setTimer(deviceId, 20);
           }
       }
 
