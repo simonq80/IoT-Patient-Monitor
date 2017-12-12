@@ -191,4 +191,4 @@ if __name__ == "__main__":
     db.create_all()
     thread = Thread(target = device_update, args = (server_host, server_port))
     thread.start()
-    app.run(host=server_host, port=server_port)
+    app.run(host=server_host, port=int(server_port))

@@ -51,8 +51,6 @@ class thingsboard:
                 "ledno" : x[1],
                 "value" : x[2]
             }} for x in dls]
-        print(paths)
-        print(bodys)
         return self.multithread_post_request(paths, bodys)
 
     def multithread_set_timer(self, device_ids, seconds):
