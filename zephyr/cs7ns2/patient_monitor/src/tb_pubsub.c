@@ -143,11 +143,8 @@ struct rpc_putTimer {
 
 struct k_timer patient_timer;
 
-bool timer_started = false;
-
 void timer_expire(struct k_timer *dummy) {
 	printk("TIMER DONE!\n");
-	timer_started = false;
 	//activate_buzzer();
 	putLights(1, true);
 }
@@ -174,11 +171,7 @@ void handle_putTimer(char *json, int json_len)
 	printk("[%s:%d] parsed method: %s, seconds: %d\n",
 		__func__, __LINE__, rx_rpc.method, rx_rpc.params.seconds);
 
-	if (!timer_started)
-	{
-		k_timer_start(&patient_timer, K_SECONDS(rx_rpc.params.seconds), 0);
-		timer_started = true;
-	}
+	k_timer_start(&patient_timer, K_SECONDS(rx_rpc.params.seconds), 0);
 
 }
 
