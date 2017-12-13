@@ -16,6 +16,7 @@ db_path = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(c['MYSQL_USER'],
     c['MYSQL_PASS'], c['MYSQL_HOST'], c['MYSQL_PORT'], c['MYSQL_DB'])
 server_host = c['SERVER_HOST']
 server_port = c['SERVER_PORT']
+dashboard_id = c['DASHBOARD_ID']
 tb_host = c['TB_HOST']
 tb_port = c['TB_PORT']
 tb_user = c['TB_USER']
@@ -65,6 +66,9 @@ class time1(db.Model):
         nullable=False)
     schedule = db.relationship('schedule', backref=db.backref('times', lazy=True))
 
+@app.route('/metrics')
+def metrics():
+    return render_template('metrics.html', db_id=dashboard_id)
 
 @app.route('/')
 @app.route('/devices', methods=['POST', 'GET'])
@@ -173,7 +177,7 @@ def add_devices():
 
 def device_update(host, port):
     while True:
-        sleep(10)
+        sleep(10    )
         data = requests.get('http://{}:{}/next_alarms'.format(host, port)).json()
 
         for deviceId in data:
@@ -182,6 +186,9 @@ def device_update(host, port):
         ids = [id for id in data]
         times = [data[id] for id in data]
         print(tb.multithread_set_timer(ids, times))
+
+
+
 
 
 if __name__ == "__main__":
