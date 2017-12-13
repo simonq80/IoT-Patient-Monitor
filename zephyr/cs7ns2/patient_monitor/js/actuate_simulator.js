@@ -1,12 +1,4 @@
 var CONFIG = require('./config.json');
-
-// DAN :: CIARAN :: PADDY :: SIMON
-var DEVICE_IDS = ["75d11e80-db82-11e7-bf11-81f362cc2ffa","539003f0-cf06-11e7-a80b-81f362cc2ffa","776a9850-db84-11e7-bf11-81f362cc2ffa","815421b0-db84-11e7-bf11-81f362cc2ffa"]
-
-var TEMPERATURE_DEVICE = 0;
-var HEART_RATE_DEVICE = 0;
-var BED_OCCUPANCY_DEVICE = 0;
-var BUZZ_DEVICE = 1;
 var BASE_URL = CONFIG.TB_ADDRESS+":" + CONFIG.TB_PORT;
 var NUMBER_OF_LEDS = 4;
 
@@ -88,12 +80,13 @@ function processTelemetryData(deviceId, data) {
     console.log("Telemetry from " + deviceId + " : " + JSON.stringify(data));
 
     // Turn on lights if temperature falls below zero
-    if (deviceId == DEVICE_IDS[TEMPERATURE_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[CONFIG.TEMPERATURE_DEVICE]) {
       if (typeof data.tmp !== 'undefined') {
           var temperature = data.tmp[0][1];
-          if( temperature <= 33) {
-            doLights(deviceId, 3, true);
-            setTimer(deviceId, 20);
+          if( temperature <= 35) {
+            for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
+              doLights(deviceId, ledno, true);
+            }
           }
       }
 
@@ -106,10 +99,10 @@ function processTelemetryData(deviceId, data) {
     }
 
     // Heart rate actuation
-    if (deviceId == DEVICE_IDS[HEART_RATE_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[CONFIG.HEART_RATE_DEVICE]) {
         if (typeof data.hrt !== 'undefined') {
           var heartRate = data.hrt[0][1];
-          if(heartRate <= 50){
+          if(heartRate <= 75){
             for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
               doLights(deviceId, ledno, true);
             }
@@ -124,7 +117,7 @@ function processTelemetryData(deviceId, data) {
     }
 
     // Bed occupancy actuation
-    if (deviceId == DEVICE_IDS[BED_OCCUPANCY_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[CONFIG.BED_OCCUPANCY_DEVICE]) {
         if (typeof data.occ !== 'undefined') {
           for(var ledno = 0; ledno < NUMBER_OF_LEDS; ledno++){
             doLights(deviceId, ledno, data.occ[0][1] == "false" ? true : false);
@@ -134,7 +127,7 @@ function processTelemetryData(deviceId, data) {
 
 
     // manaully disarm of buzzer
-    if (deviceId == DEVICE_IDS[BUZZ_DEVICE]) {
+    if (deviceId == CONFIG.DEVICE_IDS[CONFIG.BUZZ_DEVICE]) {
         if (typeof data.btn3 !== 'undefined' || typeof data.btn2 !== 'undefined') {
             console.log("Disarming buzzer...")
             updateBuzzerState(deviceId,false)
@@ -170,20 +163,20 @@ client.on('connect', function(connection) {
         if (message.type === 'utf8') {
             var rxObj = JSON.parse(message.utf8Data);
             if (typeof rxObj.subscriptionId !== 'undefined') {
-                processTelemetryData(DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
+                processTelemetryData(CONFIG.DEVICE_IDS[rxObj.subscriptionId], rxObj.data);
             }
         }
     });
 
     // Subscribe to the latest telemetry from the device (specified by an index
-    // into the DEVICE_IDS array)
+    // into the CONFIG.DEVICE_IDS array)
     // See: https://thingsboard.io/docs/user-guide/telemetry/
     function subscribe(deviceIdx) {
         var req = {
             tsSubCmds: [
                 {
                     entityType: "DEVICE",
-                    entityId: DEVICE_IDS[deviceIdx],
+                    entityId: CONFIG.DEVICE_IDS[deviceIdx],
                     scope: "LATEST_TELEMETRY",
                     cmdId: deviceIdx
                 }
@@ -192,22 +185,22 @@ client.on('connect', function(connection) {
             attrSubCmds: []
         };
 
-        console.log("Subscribing to " + DEVICE_IDS[deviceIdx]);
+        console.log("Subscribing to " + CONFIG.DEVICE_IDS[deviceIdx]);
         connection.sendUTF(JSON.stringify(req));
     }
 
     if (connection.connected) {
 
         // Subscribe to telemetry updates for MY_BTN_LED_DEVICE
-        subscribe(TEMPERATURE_DEVICE);
-        subscribe(HEART_RATE_DEVICE);
-        subscribe(BED_OCCUPANCY_DEVICE);
-        subscribe(BUZZ_DEVICE);
+        // subscribe(CONFIG.TEMPERATURE_DEVICE);
+        // subscribe(CONFIG.HEART_RATE_DEVICE);
+        // subscribe(CONFIG.BED_OCCUPANCY_DEVICE);
+        // subscribe(CONFIG.BUZZ_DEVICE);
 
         // Or subscribe to all if you want
-        // for (deviceIdx = 0; deviceIdx < DEVICE_IDS.length; deviceIdx++) {
-        //     subscribe(deviceIdx);
-        // }
+        for (deviceIdx = 0; deviceIdx < CONFIG.DEVICE_IDS.length; deviceIdx++) {
+            subscribe(deviceIdx);
+        }
     }
 });
 
